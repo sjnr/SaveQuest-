@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SaveQuest - Finance RPG</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: url('https://images.unsplash.com/photo-1534224039826-c7c50e611b47?fit=crop&w=1600&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      margin: 0;
+    }
+    header {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 1rem;
+    }
+    main {
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 16px;
+    }
+    input, button {
+      padding: 0.6rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background-color: #27ae60;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #219150;
+    }
+    .hidden {
+      display: none;
+    }
+    .progress-bar {
+      height: 20px;
+      background: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress {
+      height: 100%;
+      background: #27ae60;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .quest {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🛡️ SaveQuest</h1>
+    <p>Become the Hero of your Financial Journey</p>
+  </header>
+
+  <main id="startScreen">
+    <h2>Create Your Hero</h2>
+    <label>Hero Name:</label>
+    <input type="text" id="heroName" placeholder="e.g. Sir Save-a-lot">
+    <br>
+    <label>Savings Goal (₹):</label>
+    <input type="number" id="goalAmount" placeholder="e.g. 5000">
+    <br>
+    <button onclick="startGame()">Begin Quest</button>
+  </main>
+
+  <main id="gameScreen" class="hidden">
+    <h2>Welcome, <span id="playerName">Hero</span>! 🎯 Goal: ₹<span id="goalTarget">0</span></h2>
+    <p>💰 Total Saved: ₹<span id="currentSaved">0</span></p>
+    <p>🧠 XP: <span id="xp">0</span> | 🧙 Level: <span id="level">1</span></p>
+    
+    <div class="progress-bar">
+      <div class="progress" id="progressBar"></div>
+    </div>
+
+    <div class="quest">
+      <h3>Daily Quests</h3>
+      <button onclick="completeQuest(150, 30, 'Skipped Coffee')">☕ Skip Coffee – Save ₹150</button>
+      <button onclick="completeQuest(250, 50, 'Took Public Transport')">🚌 Use Bus – Save ₹250</button>
+      <button onclick="completeQuest(100, 20, 'Avoided Impulse Purchase')">🛒 No Impulse Buy – Save ₹100</button>
+      <button onclick="completeQuest(500, 100, 'Cooked at Home')">🍳 Cooked at Home – Save ₹500</button>
+    </div>
+
+    <div id="log" style="margin-top:1rem;"></div>
+  </main>
+
+  <script>
+    let saved = 0;
+    let xp = 0;
+    let level = 1;
+    let goal = 0;
+
+    function startGame() {
+      const name = document.getElementById('heroName').value || "Hero";
+      goal = parseInt(document.getElementById('goalAmount').value) || 1000;
+
+      document.getElementById('playerName').textContent = name;
+      document.getElementById('goalTarget').textContent = goal;
+
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('gameScreen').classList.remove('hidden');
+    }
+
+    function completeQuest(amountSaved, xpGained, questName) {
+      saved += amountSaved;
+      xp += xpGained;
+
+      // Level Up every 100 XP
+      if (xp >= level * 100) {
+        level++;
+        alert(`🎉 Level Up! You are now Level ${level}`);
+      }
+
+      // Update UI
+      document.getElementById('currentSaved').textContent = saved;
+      document.getElementById('xp').textContent = xp;
+      document.getElementById('level').textContent = level;
+
+      // Update Progress Bar
+      let progressPercent = Math.min((saved / goal) * 100, 100);
+      document.getElementById('progressBar').style.width = progressPercent + "%";
+
+      // Log update
+      const log = document.getElementById('log');
+      const entry = document.createElement('p');
+      entry.textContent = `✅ ${questName} – Saved ₹${amountSaved}, gained ${xpGained} XP.`;
+      log.prepend(entry);
+    }
+  </script>
+
+</body>
+</html>
